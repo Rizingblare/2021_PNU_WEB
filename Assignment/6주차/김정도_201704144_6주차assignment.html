@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>김정도 6주차 과제</title>
+        <style type="text/css">
+            div {
+                margin-top: 10px;
+                width: 284px;
+                display: flex;
+                flex-wrap: wrap;
+            }
+            a {
+                display: block;
+                flex: 140px;
+                max-width: 140px;
+                box-sizing: border-box;
+                border: solid 0.5px;
+                margin: 1px;
+                text-decoration: none;
+                text-align: center;
+                font-size: 3em;
+            }
+        </style>
+        <script type="text/javascript">
+            var title;
+            var source;
+            var aSet;
+            var div;
+            var markup;
+
+            function addLink()
+            {
+                title = document.getElementById("title");
+                source = document.getElementById("source");
+                aSet = document.getElementsByTagName("a");
+                div = document.getElementById("storage");
+                var isRepeat = 0;
+                for (var i=0; i<aSet.length; i++){
+                    if (title.value === aSet[i].text){
+                        isRepeat = 1; break;
+                    }
+                }
+                if (!title.value||!source.value) alert("값을 모두 입력해주세요.");
+                else if (aSet.length === 10) alert("10개 이상 입력할 수 없습니다.");
+                else if (isRepeat === 1) alert("중복된 Title이 있습니다.");
+                else {
+                    markup = "<a href='" + source.value + "'>"+title.value+"</a>";
+                    div.innerHTML += markup;
+                }
+            }
+            
+            function delLink(){
+                div = document.getElementById("storage");
+                title = document.getElementById("title");
+                aSet = document.getElementsByTagName("a");
+                for (var i=0; i<aSet.length; i++){
+                    if (title.value === aSet[i].text){
+                        div.removeChild(aSet[i]);
+                    }
+                }
+            }
+
+            function clearLink(){
+                div = document.getElementById("storage");
+                div.innerHTML = "";
+            }
+            
+            function start(){
+                var add = document.getElementById("add");
+                var del = document.getElementById("delete");
+                var clear = document.getElementById("clear");
+                add.addEventListener("click",addLink);
+                del.addEventListener("click",delLink);
+                clear.addEventListener("click",clearLink);
+            }
+            window.addEventListener("load",start);
+            
+        </script>
+    </head>
+    <body>
+        <form action="#">
+            <label>Link Title:
+                <input id="title" type="text">
+            </label>
+            <br>
+            <label>Link Src:
+                <input id="source" type="text">
+            </label>
+            <br>
+            <input id="add" type="button" value="Add Link">
+            <input id="delete" type="button" value="Delete Link">
+            <input id="clear" type="button" value="Clear">
+        </form>
+        <div id="storage"></div>
+    </body>
+</html>

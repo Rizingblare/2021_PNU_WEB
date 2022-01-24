@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+
+    </head>
+    <body>
+        <div style="text-align: center; border:1px solid;">
+        <form method = "post" action="http://164.125.36.79/server.php">
+            <p>
+                <strong> 과제 예제</strong><br>
+            </p>
+            <p>
+                <lable>이름:
+                    <input name="studentName" type="text">
+                
+            </lable></p>
+            <p>
+                <lable>학번:
+                    <input name="studentNum" type="text">               
+            </lable></p>
+            <p>
+                <label>내가 가장 좋아하는 것은:
+                    <select name = "animalList">
+                    <option selected>고양이</option>
+                    <option>강아지</option>
+                    <option>사마귀</option>
+                    <option>메뚜기</option>
+                    <option>병아리</option>
+                    <option>송아지</option>
+                    </select>
+            </label> </p>
+
+            <p>
+                <label>종류(품종):
+                    <input name="animalKind" type="text">
+            </label></p>
+            <p> <label>학명:
+                    <input name="scientificName" type ="text"> 
+            </label></p>
+            
+            <p><label>특징:
+                <textarea name="animalFeatures" rows="4" cols="36" placeholder="간략히.."></textarea>
+            </label></p>
+            
+            <p>
+                <input type="submit" value="Submit">
+                <input type="reset" value="Clear">
+            </p>
+        </form>
+    </div>
+    </body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script type="text/javascript">
+        var linkArr = new Array();
+        var curPage = 0;
+
+        function addLink(){
+            if (linkArr.findIndex(ccheckTitle) >= 0 ){
+                window.alert("이미 있는 즐겨찾기 제목입니다. 다른 제목을 사용해주세요.")
+                return;
+            }
+            linkArr.push({title:document.forms[0].linkTitle.value, src:document.forms[0].linkSrc.value});
+            linkArr.sort(compareTitle);
+
+            document.forms[0].reset();
+            makePages();
+            showLinks();
+            updateData();
+        }
+        function checkTitle(link)
+        {return link.title == document.forms[0].linkTitle.value;
+        
+        }
+        function compareTitle(link1, link2){
+           //뭐 대강 타이틀로 array sorting하는 함수
+        }
+        function deleteLink()
+        {
+            var idx = linkArr.findIndex(checkTitle);
+            if (idx <0){
+                window.alert("일치하는 제목을 가진~")
+                return;
+            }
+            linkArr.splice(idx,1);
+            makePages();
+            showLinks();
+            updateDataP();
+        }
+
+        function clearAll(){
+            linkArr = Array();
+            //대강 전체 HTML이랑 link부분 초기화 시켜주는 것
+        }
+        function showLinks(){
+         //   linkContainer 라는 id값을 가진 element안에 
+           // page별로 idx를 돌면서 link가 걸린 title을 보여주는 부분
+        }
+        function makeLink(title,src){
+            //title로 link만드는 함수
+        }
+        function makePages(){
+            //changePage에서 가져온 curPAge값과 비교하여 페이지 만들기
+        }
+        function changePage(pageNum){
+            //페이지 바꾸기
+        }
+        function updateData(){
+            $con = mysqli_connect("localhost", "root", "000000", "201704144")
+            $query = mysqli_query($con, "DELETE FROM Bookmark");
+            $escaped_values = array_map('mysql_real_escape_string', array_values(linkArr));
+            $values = implode(", ", $escaped_values);
+            $create_query = mysqli_query($con, "INSERT INTO bookmark (title, src) VALUES ($values)");
+
+       
+
+        }function start(){
+            
+                    //머라머라
+                <?php
+                    $query = mysqli_query($con, $sql);
+                    linkArr = []
+                    while ($row = mysqli_fetch_array($query)){
+                       linkArr.push(JSON.parse($row))
+                    }
+                    makePages();
+                    showLinks();
+
+                ?>
+
+        }
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

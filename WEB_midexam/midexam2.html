@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>즐겨찾기 관리</title>
+        <style type="text/css"></style>
+        <script type="text/javascript">
+            var title;
+            var link;
+            var addB;
+            var delB;
+            var allDelB;
+            var aSet;
+            var storage;
+
+            function addLink(){
+                title = document.getElementById("title");
+                link = document.getElementById("link");
+                aSet = document.getElementsByTagName("a");
+                storage = document.getElementById("storage");
+                var isRepeat = 0;
+                for (var i=0; i<aSet.length; i++){
+                    if (title.value === aSet[i].text){
+                        isRepeat = 1; break;
+                    }
+                }
+                if (aSet.length === 10) alert("10개 이상 입력할 수 없습니다.");
+                else if (isRepeat === 1) alert("중복된 Title이 있습니다.");
+                else {
+                    markup = "<a href='" + link.value + "'>"+title.value+"</a>";
+                    storage.innerHTML += markup;
+                    storage.sort(function(a,b){return a.value - b.value;});
+                }
+            }
+            function delLink(){
+                storage = document.getElementById("storage");
+                title = document.getElementById("title");
+                aSet = document.getElementsByTagName("a");
+                for (var i=0; i<aSet.length; i++){
+                    if (title.value === aSet[i].text){
+                        storage.removeChild(aSet[i]);
+                    }
+                }
+            }
+
+            function clearLink(){
+                storage = document.getElementById("storage");
+                storage.innerHTML = "";
+            }
+
+            function start(){
+                addB = document.getElementById("add");
+                delB = document.getElementById("del");
+                allDelB = document.getElementById("allDel");
+                addB.addEventListener("click",addLink);
+                delB.addEventListener("click",delLink);
+                allDelB.addEventListener("click",allDelLink);
+            }
+            window.addEventListener("load",start);
+
+        </script>
+    </head>
+    <body>
+        <form action="#">
+            <p>즐겨찾기 제목: <input id="title" type="text"></p>
+            <p>즐겨찾기 링크: <input id="link" type="text"></p>
+            <input id="add" type="button" value="즐겨찾기 추가">
+            <input id="del" type="button" value="즐겨찾기 삭제">
+            <input id="allDel" type="button" value="모두 삭제">
+        </form>
+        <div id="storage"></div>
+    </body>
+</html>

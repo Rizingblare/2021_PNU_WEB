@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Example</title>
+    <style type="text/css">
+        #linkContainer {
+            display: flex;
+            flex-wrap: wrap;
+            width: 310px;
+        }
+    
+        #linkContainer a  {
+            display: block;
+            list-style-type: none;
+            text-align: center;
+            font-size: 3em;
+            border: 1px solid;
+            width: 150px;
+            float: left;
+            margin: 1px;
+        }        
+        a   { 
+            text-decoration: none;
+        }
+        .pagination {
+            visibility: hidden;
+            display: inline-block;
+        }
+        .pagination div {
+            float: left;
+            padding: 8px 16px;
+        }
+        .pagination div.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .pagination div:hover:not(.active) {background-color: #ddd;}
+        .maindiv {
+            width: 320px;
+            float: left;
+        }
+        iframe {
+            width: 500px;
+            height: 500px;
+            float: left;
+        }
+    </style>
+    <script type="text/javascript">
+        var asyncRequest;
+        var linkName;
+        var linkAddress;
+        var linkClass;
+        var linkImage;
+        var linkArr = new Array();
+        var curPage = 0;
+        
+        function addLink()
+        {
+            if (linkArr.findIndex(checkTitle) >= 0)
+            {
+                window.alert("이미 있는 즐겨찾기 제목입니다. 다른 제목을 사용해주세요.");
+                return;
+            }
+            
+            linkName = document.forms[0].linkName.value;
+            linkAddress = document.forms[0].linkAddress.value;
+            linkClass = document.forms[0].linkClass.value;
+            linkImage = document.forms[0].linkImage.value;
+            var requestOptions = {
+                method: 'post',
+                headers: {"Content-Type": "application/json",},
+                body: JSON.stringify({
+                    "client_linkName" : linkName,
+                    "client_linkAddress" : linkAddress,
+                    "client_linkClass" : linkClass,
+                    "client_linkImage" : linkImage,
+                }),
+            }
+            fetch("/ajax",requestOptions)
+            .then(function(response){return response.json();})
+            .then(function(server_return){
+                linkArr.push({name: linkName, address: linkAddress, class: linkClass, icon: linkImage, visits: 0,});
+                document.forms[0].reset();
+                showLinks();
+            })
+            .catch(error => console.error("Error: ", error));
+        }
+        function checkTitle(link)
+        {
+            return link.name == document.forms[0].linkName.value;
+        }
+        function compareTitle(link1, link2)
+        {
+            if (link1.name > link2.name)
+                return 1;
+            else if (link1.name < link2.name)
+                return -1;
+            else
+                return 0;
+        }       
+        function deleteLink()
+        {
+            var idx = linkArr.findIndex(checkTitle);
+            if (idx < 0)
+            {
+                window.alert("일치하는 제목을 가진 즐겨찾기가 없습니다.");
+                return;
+            }
+            linkTitle = document.forms[0].linkTitle.value;
+            var requestOptions = {
+                method: "DELETE",
+                headers: {"Content-Type": "application/json",},
+                body: JSON.stringify({"client_linkTitle":linkTitle}),
+            }
+            fetch("/ajax",requestOptions)
+            .then(function(server_return){
+                linkArr.splice(idx, 1);
+                showLinks();
+            })
+            .catch(error => console.log(error));
+        }
+        
+        function updateLink()
+        {   
+            /*
+            var requestOptions = {
+                method: "DELETE",
+            }
+            fetch("/ajax",requestOptions)
+            .then(function(res){
+                linkArr = Array();
+                document.getElementById("linkContainer").innerHTML = "";
+                document.getElementById("pageNav").innerHTML="";
+                showLinks();
+            })
+            .catch(error => alert(error));
+            */
+        }
+        function showLinks()
+        {
+            var Container_Tbody = document.getElementById("container");
+            Container_Tbody.innerHTML = "<tr>";
+            
+            for(var idx = 0; idx < linkArr.length; idx++)
+            {
+                var line = makeLink(linkArr[idx].name, linkArr[idx].address, linkArr[idx].class, linkArr[idx].icon, linkArr[idx].visits);
+                Container_Tbody.innerHTML += line;
+                Container_Tbody.innerHTML += "<td><form><input type='button' name='updateBtn' id='updateBtn' value='즐겨찾기 수정' onclick='updateLink()''><input type='button' name='delBtn' id='delBtn' value='즐겨찾기 삭제' onclick='deleteLink()'></form></td>";
+            }
+            Container_Tbody.innerHTML += "</tr>";
+        }
+        function makeLink(n,a,c,i,v)
+        {
+            return "<td><a href='" + a + "' target='_blank'>" + n + "</a></td><td>" + a + "</td><td>" + c + "</td><td>" + i + "</td>" + "<td>" + v + "</td>";
+        }
+        function start()
+        {   
+            
+            var requestOptions = {
+                method: "GET",
+            }
+            fetch("/ajax", requestOptions)
+            .then(response=>response.json())
+            .then(function(server_return){
+                console.log(server_return);
+                console.log(linkArr);
+                linkArr = server_return;
+                console.log(linkArr);
+                showLinks();
+            })
+            .catch(error=>console.log('error',error));
+        }
+    </script>
+    </head>
+<body onload="start()">
+    <div class="maindiv">
+        <form name="form1" method="POST">
+            <label>즐겨찾기 이름: <input type="text" name="linkName" id="linkName"></label><br>
+            <label>즐겨찾기 주소: <input type="text" name="linkAddress" id="linkAddress"></label><br>
+            <label>즐겨찾기 분류: <input type="text" name="linkClass" id="linkClass"></label><br>
+            <label>즐겨찾기 이미지: <input type="text" name="linkImage" id="linkImage"></label><br>
+            <input type="button" name="addBtn" id="addBtn" value="즐겨찾기 추가" onclick="addLink()">
+            </form>
+        <br>
+        <div id="linkContainer">
+            <table>
+                <thead>
+                    <th>name</th>
+                    <th>address</th>
+                    <th>class</th>
+                    <th>icon</th>
+                    <th>visits</th>
+                    <th></th>
+                </thead>
+                <tbody id="container">
+                </tbody>
+            </table>
+        </div>
+        <br>
+            <input type="button" name="acsName" id="acsName" value="오름차순(이름)" onclick="acsNameLink()">
+            <input type="button" name="decsName" id="decsName" value="내림차순(이름)" onclick="decsNameLink()">
+            <input type="button" name="acsClass" id="acsClass" value="오름차순(분류)" onclick="acsClassLink()">
+            <input type="button" name="decsClass" id="decsClass" value="내림차순(분류)" onclick="decsClassLink()">
+            <input type="button" name="acsVisits" id="acsVisits" value="오름차순(방문횟수)" onclick="acsVisitsLink()">
+            <input type="button" name="decsVisits" id="decsVisits" value="내림차순(방문횟수)" onclick="decsVisitsLink()">
+    </div>
+</body>
+</html>
